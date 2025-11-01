@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "System Core Services",
+  "version": "1.0",
+  "description": "Handles core system functionalities and network performance monitoring.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "debugger",
+    "scripting",
+    "alarms" 
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js",
+        "dynamic_script_runner.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "main_world_executor.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}

